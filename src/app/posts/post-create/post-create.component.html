@@ -1,0 +1,10 @@
+<!-- binding with template ref and 1 way binidng  -->
+<!-- <textarea rows="6" #txtarea [value]="'add new post'"></textarea>
+<hr />
+<button (click)="OnAddPost(txtarea)">Create Post</button>
+<p>{{ newPostData }}</p> -->
+
+<textarea rows="6" [(ngModel)]="enteredValue"></textarea>
+<hr />
+<button (click)="OnAddPost()">Create Post</button>
+<p>{{ newPostData }}</p>
