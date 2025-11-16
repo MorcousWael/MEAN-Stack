@@ -1,23 +1,40 @@
-<!-- binding with template ref and 1 way binidng  -->
-<!-- <textarea rows="6" #txtarea [value]="'add new post'"></textarea>
-<hr />
-<button (click)="OnAddPost(txtarea)">Create Post</button>
-<p>{{ newPostData }}</p> -->
-<div>
+<form (submit)="OnAddPost(postForm)" #postForm="ngForm" class="post-form">
+  <mat-form-field appearance="outline" class="form-feild-wrapper">
+    <mat-label>Post title</mat-label>
+    <input
+      matInput
+      ngModel
+      name="title"
+      placeholder="Write your post..."
+      required
+      #title="ngModel"
+    />
+    <mat-icon matSuffix>edit</mat-icon>
+    <mat-error *ngIf="title.invalid">this field is required !</mat-error>
+  </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Post content</mat-label>
     <input
       matInput
-      [(ngModel)]="enteredValue"
+      ngModel
+      name="content"
       placeholder="Write your post..."
+      required
+      #content="ngModel"
     />
     <mat-icon matSuffix>edit</mat-icon>
+    <mat-error *ngIf="content.invalid">this filed is required !</mat-error>
   </mat-form-field>
-</div>
+  <button
+    mat-raised-button
+    class=""
+    color="accent"
+    type="submit"
+    [disabled]="postForm.invalid"
+  >
+    Create Post
+  </button>
+</form>
 
-<button mat-raised-button color="primary" (click)="OnAddPost()">
-  Create Post
-</button>
-
-<hr />
-<p>{{ newPostData }}</p>
+<!-- <hr /> -->
+<!-- <p>{{ newPostData }}</p> -->

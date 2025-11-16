@@ -1,1 +1,13 @@
-<p>post-list works!</p>
+<mat-accordion multi="true" *ngIf="posts.length > 0">
+  @for (post of posts; track $index) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> {{ post.title }} </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>{{ post.content }}</p>
+  </mat-expansion-panel>
+  }
+</mat-accordion>
+<ng-container>
+  <p class="info-text">No Posts Added Yet</p>
+</ng-container>

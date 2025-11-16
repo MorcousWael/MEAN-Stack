@@ -2,13 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  EventEmitter,
+  Output,
   ViewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { Post } from '../post-interface';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-post-create',
@@ -18,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    NgIf,
   ],
   templateUrl: './post-create.component.html',
   styleUrl: './post-create.component.scss',
@@ -29,13 +34,17 @@ import { MatButtonModule } from '@angular/material/button';
 // outputing read data
 // i alos tried to use view child which cna be replaced using template refrences or ngmodel in case of 2 way binding
 export class PostCreateComponent {
-  // @ViewChild('txtarea') txtarea!: ElementRef<HTMLTextAreaElement>;
-  // @ViewChild('postData') pRef!: ElementRef<HTMLParagraphElement>;
-  newPostData: String = '';
-  enteredValue: String = '';
+  enteredTitle: string = '';
+  enteredContent: string = '';
+  @Output() postCreated = new EventEmitter<Post>();
 
-  OnAddPost() {
-    // this.pRef.nativeElement.textContent = txtAreaVal;
-    this.newPostData = this.enteredValue;
+  OnAddPost(form: NgForm) {
+    const post: Post = {
+      title: form.value.title,
+      content: form.value.content,
+    };
+    this.postCreated.emit(post);
+    this.enteredTitle = '';
+    this.enteredContent = '';
   }
 }
