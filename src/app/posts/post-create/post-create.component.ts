@@ -1,18 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { Post } from '../post-interface';
 import { NgIf } from '@angular/common';
+import { PostsService } from '../posts.service';
 
 @Component({
   selector: 'app-post-create',
@@ -36,15 +29,13 @@ import { NgIf } from '@angular/common';
 export class PostCreateComponent {
   enteredTitle: string = '';
   enteredContent: string = '';
-  @Output() postCreated = new EventEmitter<Post>();
+
+  // injections
+
+  constructor(public postsService: PostsService) {}
 
   OnAddPost(form: NgForm) {
-    const post: Post = {
-      title: form.value.title,
-      content: form.value.content,
-    };
-    this.postCreated.emit(post);
-    this.enteredTitle = '';
-    this.enteredContent = '';
+    this.postsService.addPost(form.value.title, form.value.content);
+    form.resetForm();
   }
 }

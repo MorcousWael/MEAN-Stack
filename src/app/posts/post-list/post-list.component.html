@@ -1,13 +1,17 @@
-<mat-accordion multi="true" *ngIf="posts.length > 0">
-  @for (post of posts; track $index) {
+<mat-accordion multi="true" *ngIf="postsService.posts().length; else noPosts">
+  @for (post of postsService.posts(); track $index) {
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title> {{ post.title }} </mat-panel-title>
     </mat-expansion-panel-header>
     <p>{{ post.content }}</p>
+    <mat-action-row>
+      <button mat-button color="primary" (click)="onEdit()">Edit</button>
+      <button mat-button color="warn" (click)="onDelete()">Delete</button>
+    </mat-action-row>
   </mat-expansion-panel>
   }
 </mat-accordion>
-<ng-container>
+<ng-template #noPosts>
   <p class="info-text">No Posts Added Yet</p>
-</ng-container>
+</ng-template>

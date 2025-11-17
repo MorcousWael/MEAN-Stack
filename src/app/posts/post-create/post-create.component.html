@@ -5,12 +5,14 @@
       matInput
       ngModel
       name="title"
-      placeholder="Write your post..."
+      placeholder="Post title"
       required
       #title="ngModel"
     />
     <mat-icon matSuffix>edit</mat-icon>
-    <mat-error *ngIf="title.invalid">this field is required !</mat-error>
+    <mat-error *ngIf="title.invalid && title.touched"
+      >this field is required !</mat-error
+    >
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Post content</mat-label>
@@ -18,12 +20,14 @@
       matInput
       ngModel
       name="content"
-      placeholder="Write your post..."
+      placeholder="Post Content"
       required
       #content="ngModel"
     />
     <mat-icon matSuffix>edit</mat-icon>
-    <mat-error *ngIf="content.invalid">this filed is required !</mat-error>
+    <mat-error *ngIf="content.invalid && content.touched"
+      >this filed is required !</mat-error
+    >
   </mat-form-field>
   <button
     mat-raised-button

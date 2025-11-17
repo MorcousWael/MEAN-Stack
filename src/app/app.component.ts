@@ -18,10 +18,10 @@ import { Post } from 'app/posts/post-interface';
 })
 export class AppComponent {
   title = 'mean-course-udemy';
-  storedPosts: Post[] = [];
+  // storedPosts: Post[] = [];
 
-  onPostAdded(post: Post) {
-    this.storedPosts.push(post);
-    console.log(this.storedPosts);
-  }
+  // onPostAdded(post: Post) {
+  //   this.storedPosts.push(post);
+  //   console.log(this.storedPosts);
+  // }
 }
