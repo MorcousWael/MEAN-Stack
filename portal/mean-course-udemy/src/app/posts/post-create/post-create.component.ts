@@ -35,7 +35,8 @@ export class PostCreateComponent {
   constructor(public postsService: PostsService) {}
 
   OnAddPost(form: NgForm) {
-    this.postsService.addPost(form.value.title, form.value.content);
-    form.resetForm();
+    this.postsService
+      .addPost(form.value.title, form.value.content)
+      .subscribe(() => form.resetForm());
   }
 }

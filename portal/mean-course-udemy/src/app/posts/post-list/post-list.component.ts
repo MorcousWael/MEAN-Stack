@@ -1,21 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgFor } from '@angular/common';
 import { PostsService } from '../posts.service';
+import { Post } from '../post-interface';
 
 @Component({
   selector: 'app-post-list',
-  imports: [MatExpansionModule, MatButtonModule, NgIf],
+  imports: [MatExpansionModule, MatButtonModule, NgIf, NgFor], // <-- added NgFor
   templateUrl: './post-list.component.html',
-  styleUrl: './post-list.component.scss',
+  styleUrls: ['./post-list.component.scss'],
 })
-export class PostListComponent {
-  onDelete() {
-    throw new Error('Method not implemented.');
-  }
-  onEdit() {
-    throw new Error('Method not implemented.');
-  }
+export class PostListComponent implements OnInit {
+  posts!: Signal<readonly Post[]>;
+
   constructor(public postsService: PostsService) {}
+
+  ngOnInit() {
+    this.posts = this.postsService.getPosts();
+    this.postsService.fetchPosts();
+  }
+
+  onDelete(postId: string) {
+    // implement later
+  }
+
+  onEdit(postId: string) {
+    // implement later
+  }
 }
