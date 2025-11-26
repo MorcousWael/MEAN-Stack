@@ -1,4 +1,4 @@
-import { Component, OnInit, Signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, NgFor } from '@angular/common';
@@ -18,11 +18,11 @@ export class PostListComponent implements OnInit {
 
   ngOnInit() {
     this.posts = this.postsService.getPosts();
-    this.postsService.fetchPosts();
+    this.postsService.fetchPosts().subscribe();
   }
 
   onDelete(postId: string) {
-    // implement later
+    this.postsService.deletePost(postId).subscribe();
   }
 
   onEdit(postId: string) {

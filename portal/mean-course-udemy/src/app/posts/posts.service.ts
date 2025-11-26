@@ -15,27 +15,46 @@ export class PostsService {
 
   constructor(private http: HttpClient) {}
 
-  fetchPosts() {
-    return this.http
-      .get<{ message: string; posts: Post[] }>(this.apiUrl)
-      .pipe(tap((res) => this._posts.set(res.posts)));
-  }
-
-  addPost(title: string, content: string) {
-    const post = {
-      id: Math.random().toString(36).substring(2, 9), // temporary ID
-      title,
-      content,
-    };
-    return this.http
-      .post<{ message: string }>(this.apiUrl, post)
-      .pipe(tap(() => this._posts.update((prev) => [...prev, post])));
-  }
-
   /**
    * Return readonly signal for local use
    */
   getPosts() {
     return this.posts;
+  }
+
+  fetchPosts() {
+    return this.http.get<{ message: string; posts: any[] }>(this.apiUrl).pipe(
+      tap((res) => {
+        const mappedPosts = res.posts.map((post) => ({
+          id: post._id,
+          title: post.title,
+          content: post.content,
+        }));
+        this._posts.set(mappedPosts);
+      })
+    );
+  }
+
+  addPost(title: string, content: string) {
+    return this.http
+      .post<{ message: string; post: any }>(this.apiUrl, { title, content })
+      .pipe(
+        tap((res) => {
+          const postWithId = {
+            id: res.post._id, // map backend _id to frontend id
+            title: res.post.title,
+            content: res.post.content,
+          };
+          this._posts.update((prev) => [...prev, postWithId]);
+        })
+      );
+  }
+
+  deletePost(postId: string) {
+    return this.http.delete(`${this.apiUrl}/${postId}`).pipe(
+      tap(() => {
+        this._posts.update((prev) => prev.filter((post) => post.id !== postId));
+      })
+    );
   }
 }
