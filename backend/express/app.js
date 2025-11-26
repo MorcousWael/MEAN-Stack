@@ -2,18 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Post = require("../models/post");
 const { default: mongoose } = require("mongoose");
+require("dotenv").config();
 
 const app = express();
 mongoose
-  .connect(
-    "mongodb+srv://morcouswael_db_user:foQN4TZ4IxjcrYJL@cluster0.fvfh75h.mongodb.net/mean-stack"
-  )
-  .then(() => {
-    console.log("connected-successfully to db");
-  })
-  .catch(() => {
-    console.log("conncetion failed to db");
-  });
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
