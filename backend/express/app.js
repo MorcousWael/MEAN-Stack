@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const Post = require("../models/post");
 const { default: mongoose } = require("mongoose");
+const postRoutes = require("../routes/posts");
+
 require("dotenv").config();
 
 const app = express();
@@ -21,55 +22,10 @@ app.use((req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
+    "GET, POST,PUT, PATCH, DELETE, OPTIONS"
   );
   next();
 });
-
-app.post("/api/posts", (req, res, next) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-  });
-
-  post
-    .save()
-    .then((createdPost) => {
-      console.log("db and collection made");
-      res.status(201).json({
-        message: "Post added successfully",
-        post: createdPost, // <-- include the saved post here
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ message: "Creating post failed!" });
-    });
-});
-
-app.get("/api/posts", (req, res, next) => {
-  console.log("fetch entered");
-  Post.find().then((documents) => {
-    console.log(documents);
-    res.status(200).json({
-      message: "Posts fetched successfully!",
-      posts: documents,
-    });
-  });
-});
-
-app.delete("/api/posts/:postId", (req, res, next) => {
-  const postId = req.params.postId;
-
-  console.log("delete entered");
-  Post.findByIdAndDelete(postId)
-    .then(() => {
-      res.status(200).json({ message: "Post deleted!" });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ message: "Deletion failed!" });
-    });
-});
+app.use("/api/posts", postRoutes);
 
 module.exports = app;

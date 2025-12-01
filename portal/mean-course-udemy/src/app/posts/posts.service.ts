@@ -21,6 +21,10 @@ export class PostsService {
   getPosts() {
     return this.posts;
   }
+  getPost(postId: string) {
+    const post = this._posts().find((p) => p.id === postId);
+    return post ? { ...post } : undefined;
+  }
 
   fetchPosts() {
     return this.http.get<{ message: string; posts: any[] }>(this.apiUrl).pipe(
@@ -48,6 +52,15 @@ export class PostsService {
           this._posts.update((prev) => [...prev, postWithId]);
         })
       );
+  }
+
+  updatePost(postId: string, title: string, content: string) {
+    const post: Post = {
+      id: postId,
+      title: title,
+      content: content,
+    };
+    return this.http.put(`${this.apiUrl}/${postId}`, post);
   }
 
   deletePost(postId: string) {

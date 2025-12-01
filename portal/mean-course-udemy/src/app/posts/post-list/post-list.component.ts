@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, NgFor } from '@angular/common';
 import { PostsService } from '../posts.service';
 import { Post } from '../post-interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-list',
@@ -13,6 +14,7 @@ import { Post } from '../post-interface';
 })
 export class PostListComponent implements OnInit {
   posts!: Signal<readonly Post[]>;
+  private router = inject(Router);
 
   constructor(public postsService: PostsService) {}
 
@@ -26,6 +28,6 @@ export class PostListComponent implements OnInit {
   }
 
   onEdit(postId: string) {
-    // implement later
+    this.router.navigate(['/edit', postId]);
   }
 }

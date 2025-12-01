@@ -1,9 +1,9 @@
-<form (submit)="OnAddPost(postForm)" #postForm="ngForm" class="post-form">
+<form (submit)="onSavePost(postForm)" #postForm="ngForm" class="post-form">
   <mat-form-field appearance="outline" class="form-feild-wrapper">
     <mat-label>Post title</mat-label>
     <input
       matInput
-      ngModel
+      [ngModel]="post?.title"
       name="title"
       placeholder="Post title"
       required
@@ -18,7 +18,7 @@
     <mat-label>Post content</mat-label>
     <input
       matInput
-      ngModel
+      [ngModel]="post?.content"
       name="content"
       placeholder="Post Content"
       required
@@ -36,9 +36,8 @@
     type="submit"
     [disabled]="postForm.invalid"
   >
-    Create Post
+    {{ isEditMode ? "Update Post" : "Create Post" }}
   </button>
 </form>
-
 <!-- <hr /> -->
 <!-- <p>{{ newPostData }}</p> -->
