@@ -39,9 +39,13 @@ export class PostsService {
     );
   }
 
-  addPost(title: string, content: string) {
+  addPost(title: string, content: string, image: File) {
+    const postData = new FormData();
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('image', image, image.name);
     return this.http
-      .post<{ message: string; post: any }>(this.apiUrl, { title, content })
+      .post<{ message: string; post: any }>(this.apiUrl, postData)
       .pipe(
         tap((res) => {
           const postWithId = {

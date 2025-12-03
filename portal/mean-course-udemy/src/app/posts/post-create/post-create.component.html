@@ -1,43 +1,59 @@
-<form (submit)="onSavePost(postForm)" #postForm="ngForm" class="post-form">
+<form [formGroup]="form" (ngSubmit)="onSavePost()" class="post-form">
+  <!-- Title -->
   <mat-form-field appearance="outline" class="form-feild-wrapper">
     <mat-label>Post title</mat-label>
-    <input
-      matInput
-      [ngModel]="post?.title"
-      name="title"
-      placeholder="Post title"
-      required
-      #title="ngModel"
-    />
+    <input matInput formControlName="title" placeholder="Post title" required />
     <mat-icon matSuffix>edit</mat-icon>
-    <mat-error *ngIf="title.invalid && title.touched"
-      >this field is required !</mat-error
-    >
+    <mat-error *ngIf="form.get('title')?.invalid && form.get('title')?.touched">
+      This field is required!
+    </mat-error>
   </mat-form-field>
+
+  <!-- Image Upload -->
+  <div>
+    <button mat-stroked-button type="button" (click)="filePicker.click()">
+      Upload Image
+    </button>
+    <input type="file" #filePicker (change)="onImagePick($event)" />
+  </div>
+  <div class="image-preview" *ngIf="isUploading || imagePreview">
+    <mat-progress-spinner
+      *ngIf="isUploading"
+      mode="indeterminate"
+      diameter="40"
+    >
+    </mat-progress-spinner>
+    <img
+      [src]="imagePreview"
+      [alt]="form.value.title"
+      accept="image/*"
+      *ngIf="!isUploading && imagePreview"
+    />
+  </div>
+
+  <!-- Content -->
   <mat-form-field appearance="outline">
     <mat-label>Post content</mat-label>
     <input
       matInput
-      [ngModel]="post?.content"
-      name="content"
+      formControlName="content"
       placeholder="Post Content"
       required
-      #content="ngModel"
     />
     <mat-icon matSuffix>edit</mat-icon>
-    <mat-error *ngIf="content.invalid && content.touched"
-      >this filed is required !</mat-error
+    <mat-error
+      *ngIf="form.get('content')?.invalid && form.get('content')?.touched"
     >
+      This field is required!
+    </mat-error>
   </mat-form-field>
+
   <button
     mat-raised-button
-    class=""
     color="accent"
     type="submit"
-    [disabled]="postForm.invalid"
+    [disabled]="form.invalid"
   >
     {{ isEditMode ? "Update Post" : "Create Post" }}
   </button>
 </form>
-<!-- <hr /> -->
-<!-- <p>{{ newPostData }}</p> -->
