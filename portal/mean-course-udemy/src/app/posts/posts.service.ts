@@ -33,6 +33,7 @@ export class PostsService {
           id: post._id,
           title: post.title,
           content: post.content,
+          imagePath: post.imagePath,
         }));
         this._posts.set(mappedPosts);
       })
@@ -45,26 +46,61 @@ export class PostsService {
     postData.append('content', content);
     postData.append('image', image, image.name);
     return this.http
-      .post<{ message: string; post: any }>(this.apiUrl, postData)
+      .post<{ message: string; post: Post }>(this.apiUrl, postData)
       .pipe(
         tap((res) => {
           const postWithId = {
-            id: res.post._id, // map backend _id to frontend id
+            id: res.post.id,
             title: res.post.title,
             content: res.post.content,
+            imagePath: res.post.imagePath,
           };
           this._posts.update((prev) => [...prev, postWithId]);
         })
       );
   }
 
-  updatePost(postId: string, title: string, content: string) {
-    const post: Post = {
-      id: postId,
-      title: title,
-      content: content,
-    };
-    return this.http.put(`${this.apiUrl}/${postId}`, post);
+  updatePost(
+    postId: string,
+    title: string,
+    content: string,
+    image: File | string
+  ) {
+    let postData: Post | FormData;
+    if (image instanceof File) {
+      postData = new FormData();
+      postData.append('id', postId);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, image.name);
+    } else {
+      postData = {
+        id: postId,
+        title: title,
+        content: content,
+        imagePath: image,
+      };
+    }
+    return this.http
+      .put<{ message: string; post: any }>(`${this.apiUrl}/${postId}`, postData)
+      .pipe(
+        tap((res) => {
+          // update the local _posts signal
+          this._posts.update((prev) => {
+            const updatedPosts = prev.map((post) =>
+              post.id === postId
+                ? {
+                    ...post,
+                    title,
+                    content,
+                    imagePath: res.post.imagePath, // ensure backend returns the new path
+                  }
+                : post
+            );
+            return updatedPosts;
+          });
+        })
+      );
   }
 
   deletePost(postId: string) {

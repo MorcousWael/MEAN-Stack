@@ -23,7 +23,12 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    const filename = file.originalname.toLowerCase().split(" ").join("-");
+    console.log(file.originalname);
+    const filename = file.originalname
+      .toLowerCase()
+      .split(" ")
+      .join("-")
+      .replace(/\.[^/.]+$/, "");
     const ext = mimeTypeMap[file.mimetype];
     cb(null, filename + "-" + Date.now() + "." + ext);
     console.log("Final filename:", `${filename}-${Date.now()}.${ext}`);
@@ -34,9 +39,11 @@ router.post(
   "",
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
+    const url = `${req.protocol}://${req.get("host")}`;
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
+      imagePath: `${url}/images/${req.file.filename}`,
     });
 
     post
@@ -45,7 +52,12 @@ router.post(
         console.log("db and collection made");
         res.status(201).json({
           message: "Post added successfully",
-          post: createdPost, // <-- include the saved post here
+          post: {
+            id: createdPost._id,
+            title: createdPost.title,
+            content: createdPost.content,
+            imagePath: createdPost.imagePath,
+          },
         });
       })
       .catch((err) => {
@@ -55,38 +67,48 @@ router.post(
   }
 );
 
+router.put(
+  "/:postId",
+  multer({ storage: storage }).single("image"),
+  (req, res, next) => {
+    console.log("put entered");
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+      const url = `${req.protocol}://${req.get("host")}`;
+      imagePath = `${url}/images/${req.file.filename}`;
+    }
+    const postId = req.params.postId;
+    const updatedPost = {
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: imagePath,
+    };
+    Post.findByIdAndUpdate(postId, updatedPost, { new: true })
+      .then((result) => {
+        if (!result) {
+          return res.status(404).json({ message: "Post not found!" });
+        }
+        res.status(200).json({
+          message: "Post updated successfully!",
+          post: result,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ message: "Updating post failed." });
+      });
+  }
+);
+
 router.get("", (req, res, next) => {
   console.log("fetch entered");
   Post.find().then((documents) => {
-    console.log(documents);
+    // console.log(documents);
     res.status(200).json({
       message: "Posts fetched successfully!",
       posts: documents,
     });
   });
-});
-
-router.put("/:postId", (req, res, next) => {
-  console.log("delete entered");
-  const postId = req.params.postId;
-  const updatedPost = {
-    title: req.body.title,
-    content: req.body.content,
-  };
-  Post.findByIdAndUpdate(postId, updatedPost, { new: true })
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({ message: "Post not found!" });
-      }
-      res.status(200).json({
-        message: "Post updated successfully!",
-        post: result,
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ message: "Updating post failed." });
-    });
 });
 
 router.delete("/:postId", (req, res, next) => {
