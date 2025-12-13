@@ -101,14 +101,28 @@ router.put(
 );
 
 router.get("", (req, res, next) => {
-  console.log("fetch entered");
-  Post.find().then((documents) => {
-    // console.log(documents);
-    res.status(200).json({
-      message: "Posts fetched successfully!",
-      posts: documents,
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.currentPage;
+  const postQuery = Post.find();
+  let fetchedPosts;
+  //fetch slected posts
+  if (pageSize && currentPage) {
+    postQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+  // fetch all posts
+  postQuery
+    .then((documents) => {
+      fetchedPosts = documents;
+      // console.log(documents);
+      return Post.countDocuments();
+    })
+    .then((count) => {
+      res.status(200).json({
+        message: "Posts fetched successfully!",
+        posts: fetchedPosts,
+        totalPosts: count,
+      });
     });
-  });
 });
 
 router.delete("/:postId", (req, res, next) => {
