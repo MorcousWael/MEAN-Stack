@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  width: 80%;
+  margin-inline: auto;
+  margin-top: 1rem;
+}
+.post-form {
+  display: flex;
+  flex-direction: column; // stack items vertically
+  gap: 16px; // space between fields
+  margin-bottom: 40px;
+
+  .form-field {
+    width: 100%; // full width
+  }
+
+  button {
+    align-self: flex-start; // optional, keep button aligned to left
+  }
+}
+input[type="file"] {
+  visibility: hidden;
+}
+.image-preview {
+  height: 5rem;
+  margin: 1rem 0;
+  img {
+    max-height: 100%;
+  }
+}

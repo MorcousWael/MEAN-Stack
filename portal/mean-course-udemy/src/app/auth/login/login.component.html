@@ -1,0 +1,55 @@
+<mat-progress-spinner
+  *ngIf="isLoading"
+  mode="indeterminate"
+  diameter="40"
+></mat-progress-spinner>
+
+<form
+  class="post-form"
+  #loginForm="ngForm"
+  (ngSubmit)="onLogin(loginForm)"
+  *ngIf="!isLoading"
+>
+  <!-- Email -->
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      type="email"
+      name="email"
+      required
+      email
+      ngModel
+      #email="ngModel"
+    />
+    <mat-error *ngIf="email.invalid && email.touched">
+      Please enter a valid email
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Password -->
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input
+      matInput
+      type="password"
+      name="password"
+      required
+      minlength="6"
+      ngModel
+      #password="ngModel"
+    />
+    <mat-error *ngIf="password.invalid && password.touched">
+      Please enter password
+    </mat-error>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="accent"
+    type="submit"
+    [disabled]="loginForm.invalid"
+  >
+    Login
+  </button>
+</form>

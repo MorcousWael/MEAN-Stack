@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 
 const router = express.Router();
-const Post = require("../models/post");
+const Post = require("../models/user");
 
 const mimeTypeMap = {
   "image/jpeg": "jpg",

@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { default: mongoose } = require("mongoose");
 const postRoutes = require("../routes/posts");
+const UserRoutes = require("../routes/auth");
 
 require("dotenv").config();
 
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 app.use("/api/posts", postRoutes);
+app.use("/api/user", UserRoutes);
 
 module.exports = app;

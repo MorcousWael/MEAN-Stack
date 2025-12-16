@@ -24,7 +24,7 @@ import { Post } from '../post-interface';
 @Component({
   selector: 'app-post-create',
   imports: [
-    ReactiveFormsModule, // ⬅ required
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
